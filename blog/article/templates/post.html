@@ -1,0 +1,72 @@
+
+{% extends "base.html" %}
+{% load custom_markdown %}
+{% block content %}
+<div class="posts">
+        <section class="post">
+            <header class="post-header">
+                <h2 class="post-title">{{ post.title }}</h2>
+
+                    <p class="post-meta">
+                        Time:  <a class="post-author" href="#">{{ post.date_time|date:"Y /m /d"}}</a>
+                        &nbsp;<a class="post-author" href="#">{{ post.author}}</a>
+                        <a class="post-category post-category-js" href="#">{{ post.category }}</a>
+
+                    </p>
+            </header>
+
+                <div class="post-description">
+                    <p>
+                        {{ post.content|safe}}
+
+                    </p>
+                </div>
+        </section>
+     <section class="comment-area" id="comment-area">
+        <hr>
+        <h3>发表评论</h3>
+        <form action="{% url "comments:article_comment" post.id %}" method="post" class="comment-form">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="{{ form.name.id_for_label }}">名字：</label>
+                    {{ form.name }}
+                    {{ form.name.errors }}
+                </div>
+                <div class="col-md-4">
+                    <label for="{{ form.email.id_for_label }}">邮箱：</label>
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                </div>
+                <div class="col-md-12">
+                    <label for="{{ form.text.id_for_label }}">评论：</label>
+                    {{ form.text }}
+                    {{ form.text.errors }}
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;
+                    <button type="submit" class="comment-btn">发表</button>
+                </div>
+            </div>    <!-- row -->
+        </form>
+
+        <div class="comment-list-panel">
+            <h3>评论列表，共 <span>{{ comment_list|length}}</span> 条评论</h3>
+            <ul class="comment-list list-unstyled">
+                {% for comment in comment_list %}
+                    <li class="comment-item">
+                        <span class="nickname">{{ comment.name }}</span>
+                        <time class="submit-date"
+                              datetime="{{ comment.created_time }}">{{ comment.date_time }}</time>
+                        <div class="text">
+                            {{ comment.text }}
+                        </div>
+                    </li>
+                {% empty %}
+                    暂无更多评论
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+
+</div><!-- /.blog-post -->
+{% endblock %}
